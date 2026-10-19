@@ -10,8 +10,7 @@ real-world uses, so you can read from it while presenting.
 * **Language / libraries:** C++17 and SDL2 only (no SDL_ttf, no other dependencies).
 * **Font:** a bitmap font embedded in `src/FontData.cpp`; no font files are loaded.
 * **Data structure from scratch:** plain `struct BSTNode { key, left, right }` with pointers.
-  There is no `std::map`/`std::set`, and level-order traversal uses our own `Queue`
-  (`include/SimpleQueue.h`).
+  There is no `std::map` or `std::set`.
 
 ### Operations
 | Operation | What the animation shows |
@@ -20,7 +19,6 @@ real-world uses, so you can read from it while presenting.
 | **Delete** | the search path, then the case: **leaf** (just removed), **one child** (child moves up), **two children** (find the inorder successor, copy it, delete the successor) |
 | **Search** | the path of comparisons; found (blue) or "not in the tree" |
 | **Min / Max** | walking left (or right) until there is no child |
-| **Inorder / Preorder / Postorder / Level order** | each node lights up in visiting order; the output builds up at the top |
 | **Insert random / Clear / Load sample** | quick setup during the demo |
 
 ---
@@ -106,7 +104,7 @@ To rebuild the web files after changing the C++ code: `make web` (needs the Emsc
 | Type a number (or a list `50 30 70`) | the input box focuses by itself as you type |
 | **Enter** | insert the typed value(s); each insert animates in turn |
 | **Delete** key | delete the typed value(s) |
-| Buttons in the bottom bar | Insert, Delete, Search, Min, Max, Inorder, Preorder, Postorder, Level order, Insert random, Clear, Load sample |
+| Buttons in the bottom bar | Insert, Delete, Search, Min, Max, Insert random, Clear, Load sample |
 | **Space** | pause / resume the animation |
 | **Right arrow** | next step (pauses automatically, then steps one at a time) |
 | **Left arrow** | previous step (replays it backwards) |
@@ -131,7 +129,7 @@ teal = new node / copied key · red = node being deleted.
 include/                         src/
   App.h            window, renderer, 60 FPS main loop
   TreeVisualizer.h BASE CLASS: layout, buttons, input box, step log, info panel, keys
-  BinaryVisBase.h  binary-tree helpers + the four traversal animations
+  BinaryVisBase.h  binary-tree helpers (count nodes, free memory)
   BSTVis.h         THE BINARY SEARCH TREE: insert, delete, search, min, max
   Anim.h           Frame (snapshot) + AnimPlayer (queue of steps) + easing
   Scene.h          draws and blends two frames, in-order layout, camera fit
@@ -139,7 +137,6 @@ include/                         src/
   Font.h           embedded bitmap font (data in FontData.cpp)
   Theme.h          colours, highlight kinds, dark / light theme
   UI.h             Button, InputBox, Slider
-  SimpleQueue.h    our own Queue (circular array) for level order
 ```
 
 **Base interface.** `BSTVis` derives from `TreeVisualizer`, which exposes `update(dt)`,

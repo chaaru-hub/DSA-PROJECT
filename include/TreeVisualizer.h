@@ -44,7 +44,6 @@ struct LegendItem {
 // Action ids shared by all visualizers; trees add their own from ActCustom.
 enum CommonAction {
     ActInsert = 1, ActDelete, ActSearch, ActRandom, ActClear, ActSample,
-    ActInorder, ActPreorder, ActPostorder, ActLevelOrder,
     ActCustom = 100
 };
 

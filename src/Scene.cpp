@@ -181,7 +181,7 @@ void drawScene(Gfx& g, const Frame& A, const Frame& B, float t, const SDL_FRect&
         crossText(g, la, lb, e, n.x, n.y, r * 0.85f, withAlpha(textOn(n.fill), a), r * 1.75f);
     }
 
-    // ---- caption (traversal output) ----
+    // ---- caption (optional line at the top) ----
     if (hasCaption) {
         if (B.caption != A.caption && !A.caption.empty())
             g.text(A.caption, area.x + 18, area.y + 14, 18, withAlpha(th.text, 1 - e), Align::Left, true);

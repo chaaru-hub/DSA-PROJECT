@@ -64,7 +64,7 @@ Alternatively, shuffle the keys before inserting.
 
 ### 14. How is level-order traversal implemented?
 With a queue: enqueue the root; repeatedly dequeue a node, visit it, and enqueue its left and right
-children. In this project the queue is our own circular-array `Queue` class.
+children.
 
 ### 15. What is the space complexity of a BST and of its operations?
 The tree uses O(n) memory (one node per key with two pointers). Iterative search/insert use O(1)
