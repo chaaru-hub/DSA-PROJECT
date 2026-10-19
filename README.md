@@ -82,6 +82,10 @@ The window prints the direct link, e.g. **http://localhost:8000**, and opens it 
 If port 8000 is busy it uses 8001, 8002, … and prints that link instead. Keep the window open
 while you use the page; Ctrl+C stops it. (`serve.py` is only a launcher, not part of the C++ project.)
 
+**Deploy online with Vercel:** import this repository in Vercel and click Deploy. The included
+`vercel.json` publishes the ready-made `web/` folder (no build step), so the site opens at your
+`*.vercel.app` address.
+
 To rebuild the web files after changing the C++ code: `make web` (needs the Emscripten SDK).
 `#ifdef __EMSCRIPTEN__` in `App.cpp` hands each frame to the browser; the desktop build is unchanged.
 
