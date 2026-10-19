@@ -16,13 +16,18 @@ void Button::draw(Gfx& g) const {
     Color base = primary ? t.buttonPrimary : t.button;
     Color hov = primary ? lerpColor(t.buttonPrimary, rgb(255, 255, 255), 0.18f) : t.buttonHover;
     if (active) base = hov = t.accent;
+    if (selected) base = hov = t.current;   // last used operation: yellow
     Color c = lerpColor(base, hov, hover);
     c = lerpColor(c, rgb(255, 255, 255), press * 0.35f);
     float lift = hover * 1.5f;
     g.fillRoundRect(rect.x, rect.y + 2, rect.w, rect.h, 8, withAlpha(t.shadow, 0.6f));
     g.fillRoundRect(rect.x, rect.y - lift, rect.w, rect.h, 8, c);
-    if (!primary && !active) g.strokeRoundRect(rect.x, rect.y - lift, rect.w, rect.h, 8, 1.0f, t.border);
-    Color tc = (primary || active) ? rgb(255, 255, 255) : t.buttonText;
+    if (!primary && !active && !selected) g.strokeRoundRect(rect.x, rect.y - lift, rect.w, rect.h, 8, 1.0f, t.border);
+    if (selected) {
+        // glow ring so the last used button stands out
+        g.strokeRoundRect(rect.x - 3, rect.y - lift - 3, rect.w + 6, rect.h + 6, 10, 2.0f, withAlpha(t.current, 0.7f));
+    }
+    Color tc = selected ? rgb(30, 24, 8) : (primary || active) ? rgb(255, 255, 255) : t.buttonText;
     g.textCentered(label, rect.x + rect.w * 0.5f, rect.y + rect.h * 0.5f - lift, 14, tc, true);
 }
 

@@ -56,8 +56,11 @@ void TreeVisualizer::setSpeed(float s) {
 }
 
 void TreeVisualizer::triggerAction(int id) {
-    for (Button& b : buttons_)
+    // remember which button was used, so it stays highlighted
+    for (Button& b : buttons_) {
         if (b.id == id) b.press = 1.0f;
+        b.selected = (b.id == id);
+    }
     std::string text = input_.text;
     input_.text.clear();
     input_.focused = false;

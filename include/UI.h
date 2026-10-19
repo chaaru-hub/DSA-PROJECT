@@ -17,6 +17,7 @@ struct Button {
     SDL_FRect rect{0, 0, 0, 0};
     bool primary = false;
     bool active = false;    // toggled look (e.g. Pause)
+    bool selected = false;  // the operation the user ran last (highlighted)
     float hover = 0;        // 0..1 animated hover amount
     float press = 0;        // 0..1 click flash
 

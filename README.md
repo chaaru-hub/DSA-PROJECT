@@ -105,6 +105,7 @@ To rebuild the web files after changing the C++ code: `make web` (needs the Emsc
 | **Enter** | insert the typed value(s); each insert animates in turn |
 | **Delete** key | delete the typed value(s) |
 | Buttons in the bottom bar | Insert, Delete, Search, Min, Max, Insert random, Clear, Load sample |
+| (after any operation) | the button you used last stays highlighted in yellow until you use another one |
 | **Space** | pause / resume the animation |
 | **Right arrow** | next step (pauses automatically, then steps one at a time) |
 | **Left arrow** | previous step (replays it backwards) |
