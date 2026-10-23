@@ -49,7 +49,7 @@ struct Frame {
     std::string header;              // operation title, e.g. "INSERT 17" (first frame of an op)
     std::string log;                 // plain-English explanation of this step
     int logKind = LogStep;
-    std::string caption;             // optional big line at the top of the canvas
+    std::string caption;             // big line at the top of the canvas (traversal output)
 };
 
 // ---- global animation settings ------------------------------------------------

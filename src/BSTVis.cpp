@@ -19,6 +19,7 @@ void BSTVis::setup() {
     addButton(ActSearch, "Search", "Search for the typed number");
     addButton(ActMin, "Min", "Walk left to the smallest key");
     addButton(ActMax, "Max", "Walk right to the largest key");
+    addTraversalButtons();
     addButton(ActRandom, "Insert random");
     addButton(ActClear, "Clear");
     addButton(ActSample, "Load sample");
@@ -40,7 +41,8 @@ void BSTVis::setup() {
     info_.complexity = {{"Search", "O(1)", "O(log n)", "O(n)"},
                         {"Insert", "O(1)", "O(log n)", "O(n)"},
                         {"Delete", "O(1)", "O(log n)", "O(n)"},
-                        {"Min / Max", "O(1)", "O(log n)", "O(n)"}};
+                        {"Min / Max", "O(1)", "O(log n)", "O(n)"},
+                        {"Traversal", "O(n)", "O(n)", "O(n)"}};
     info_.space = "O(n) nodes, O(h) recursion stack";
     info_.uses = {"Ordered dictionaries / symbol tables in compilers.",
                   "Range queries: list all keys between a and b in sorted order.",
@@ -68,6 +70,7 @@ void BSTVis::buildScene(Frame& f) {
 }
 
 void BSTVis::onAction(int id, const std::string& input) {
+    if (handleTraversal(id)) return;
     int v = 0;
     switch (id) {
     case ActInsert:
