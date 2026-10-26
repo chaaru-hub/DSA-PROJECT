@@ -1,12 +1,11 @@
 // ============================================================================
 // BinaryVisBase.h - helpers for a pointer-based binary tree:
-//   counting, height, freeing memory, and the four traversal animations.
+//   counting, height, freeing memory, and the three traversal animations.
 //
 // 'Node' must have:  int key; int id; Node* left; Node* right;
 // ============================================================================
 #pragma once
 #include <string>
-#include "SimpleQueue.h"
 #include "TreeVisualizer.h"
 
 
@@ -36,39 +35,20 @@ protected:
         addButton(ActInorder, "Inorder", "Left, Node, Right (sorted order for a BST)");
         addButton(ActPreorder, "Preorder", "Node, Left, Right");
         addButton(ActPostorder, "Postorder", "Left, Right, Node");
-        addButton(ActLevelOrder, "Level order", "Breadth-first using a queue");
     }
 
     // Returns true if 'id' was a traversal button and the animation was recorded.
     bool handleTraversal(int id) {
-        if (id < ActInorder || id > ActLevelOrder) return false;
+        if (id < ActInorder || id > ActPostorder) return false;
         static const char* names[] = {"INORDER (Left, Node, Right)", "PREORDER (Node, Left, Right)",
-                                      "POSTORDER (Left, Right, Node)", "LEVEL ORDER (breadth first)"};
-        static const char* shortNames[] = {"Inorder", "Preorder", "Postorder", "Level order"};
+                                      "POSTORDER (Left, Right, Node)"};
+        static const char* shortNames[] = {"Inorder", "Preorder", "Postorder"};
         int kind = id - ActInorder;
         beginOp(std::string("TRAVERSAL: ") + names[kind]);
         if (isNil(root_)) { done("The tree is empty - nothing to traverse."); return true; }
         seq_.clear();
         prefix_ = std::string(shortNames[kind]) + ":  ";
-        if (kind == 3) {
-            // Breadth-first: a queue holds the nodes waiting to be visited.
-            Queue<Node*> q;
-            q.push(root_);
-            while (!q.empty()) {
-                Node* n = q.pop();
-                std::string msg = "Dequeue " + keyText(n) + " and visit it";
-                std::string kids;
-                if (!isNil(n->left)) { q.push(n->left); kids += keyText(n->left); }
-                if (!isNil(n->right)) {
-                    q.push(n->right);
-                    kids += (kids.empty() ? "" : ", ") + keyText(n->right);
-                }
-                if (!kids.empty()) msg += "; enqueue its children " + kids;
-                visit(n, msg);
-            }
-        } else {
-            depthFirst(root_, kind);
-        }
+        depthFirst(root_, kind);
         done(std::string(shortNames[kind]) + " result: " + seq_);
         return true;
     }

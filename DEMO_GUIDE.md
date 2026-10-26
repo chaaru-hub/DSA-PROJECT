@@ -40,7 +40,7 @@ Use **Load sample** first (50 30 70 20 40 60 80 35 65 85).
 ### 5. Traversals (1.5 min)
 * **Inorder:** the output at the top is **sorted**. *"This is why inorder of a BST = sorted order."*
 * **Preorder** (root first, used to copy/save a tree), **Postorder** (children first, used to
-  delete a tree), **Level order** (breadth-first with a queue).
+  delete a tree).
 
 ### 6. The worst case (1 min)
 * **Clear**, then type `10 20 30 40 50` and press Enter. Every node goes right, and the tree becomes

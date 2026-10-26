@@ -60,16 +60,15 @@ Alternatively, shuffle the keys before inserting.
 * **Inorder** (L, N, R): sorted output of a BST.
 * **Preorder** (N, L, R): copying or saving a tree; recreating the same BST by re-inserting.
 * **Postorder** (L, R, N): deleting / freeing a tree (children before parent).
-* **Level order** (breadth-first, with a queue): printing level by level, shortest-path style problems.
 
-### 14. How is level-order traversal implemented?
-With a queue: enqueue the root; repeatedly dequeue a node, visit it, and enqueue its left and right
-children. In this project the queue is our own circular-array `Queue` class.
+### 14. How are the three traversals implemented?
+With one recursive function: visit the left subtree, then the right subtree. The only difference
+is where the node itself is visited: before both calls (preorder), between them (inorder) or after
+both (postorder).
 
 ### 15. What is the space complexity of a BST and of its operations?
 The tree uses O(n) memory (one node per key with two pointers). Iterative search/insert use O(1)
-extra space; recursive versions and traversals use O(h) stack space; level order uses O(w) queue
-space, where w is the maximum width.
+extra space; recursive versions and traversals use O(h) stack space.
 
 ### 16. What are the height and depth of a node? What is the height of a BST with n nodes?
 Depth = number of edges from the root to the node; height = number of edges on the longest path
@@ -130,6 +129,6 @@ anti-aliasing. The program runs at 60 FPS with VSync.
 ### Bonus quick-fire answers
 * **Recursive vs iterative search?** Same O(h) time; iterative uses O(1) space, recursive O(h) stack.
 * **Which traversal frees a tree safely?** Postorder (children are freed before the parent).
-* **Which traversal lets you rebuild the same BST by inserting?** Preorder (or level order).
+* **Which traversal lets you rebuild the same BST by inserting?** Preorder.
 * **Inorder + preorder → unique tree?** Yes, for distinct keys, any binary tree can be rebuilt
   from its inorder and preorder sequences.
