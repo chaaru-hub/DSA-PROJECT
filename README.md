@@ -22,6 +22,9 @@ in plain English ("35 > 30, go right").
 
 ---
 
+> **Windows + VS Code:** see [RUN_ON_WINDOWS_VSCODE.md](RUN_ON_WINDOWS_VSCODE.md) for every command,
+> or open the folder in VS Code and press **Ctrl + Shift + B** to run it on localhost.
+
 ## 1. Install SDL2
 
 You need **SDL 2.0.18 or newer** (for `SDL_RenderGeometry`); any current package is fine.

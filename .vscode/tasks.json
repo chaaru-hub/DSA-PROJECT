@@ -1,0 +1,54 @@
+{
+  // VS Code tasks for the BST Visualizer.
+  //   Ctrl+Shift+B                 -> "Run on localhost (browser)"
+  //   Terminal > Run Task...       -> pick any task below
+  "version": "2.0.0",
+  "tasks": [
+    {
+      "label": "Run on localhost (browser)",
+      "detail": "Starts a local web server and opens http://localhost:8000",
+      "type": "shell",
+      "windows": { "command": "web\\start-server.bat" },
+      "linux": { "command": "python3 web/serve.py" },
+      "osx": { "command": "python3 web/serve.py" },
+      "options": { "cwd": "${workspaceFolder}" },
+      "isBackground": true,
+      "problemMatcher": [],
+      "group": { "kind": "build", "isDefault": true },
+      "presentation": { "reveal": "always", "panel": "dedicated" }
+    },
+    {
+      "label": "Build and run desktop app (MSYS2)",
+      "detail": "Compiles the C++ code with MSYS2 (UCRT64) and starts TreeViz.exe",
+      "type": "process",
+      "windows": {
+        "command": "C:\\msys64\\usr\\bin\\bash.exe",
+        "args": ["-lc", "make run"],
+        "options": {
+          "cwd": "${workspaceFolder}",
+          "env": { "MSYSTEM": "UCRT64", "CHERE_INVOKING": "1" }
+        }
+      },
+      "linux": { "command": "make", "args": ["run"] },
+      "osx": { "command": "make", "args": ["run"] },
+      "problemMatcher": ["$gcc"],
+      "group": "build"
+    },
+    {
+      "label": "Self-test (5000 random operations)",
+      "type": "process",
+      "windows": {
+        "command": "C:\\msys64\\usr\\bin\\bash.exe",
+        "args": ["-lc", "make test"],
+        "options": {
+          "cwd": "${workspaceFolder}",
+          "env": { "MSYSTEM": "UCRT64", "CHERE_INVOKING": "1" }
+        }
+      },
+      "linux": { "command": "make", "args": ["test"] },
+      "osx": { "command": "make", "args": ["test"] },
+      "problemMatcher": ["$gcc"],
+      "group": "test"
+    }
+  ]
+}
