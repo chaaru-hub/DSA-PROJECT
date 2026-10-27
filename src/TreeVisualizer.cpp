@@ -426,12 +426,13 @@ void TreeVisualizer::draw(Gfx& g, int winW, int winH) {
 
 void TreeVisualizer::drawLegend(Gfx& g) {
     const Theme& th = theme();
-    float x = canvas_.x + 16, y = canvas_.y + canvas_.h - 48 - 21;
+    const float size = 17, r = 9;      // legend text size and dot radius
+    float x = canvas_.x + 18, y = canvas_.y + canvas_.h - 48 - 32;
     for (const LegendItem& l : legend_) {
-        g.fillCircle(x + 6, y + 7, 6, nodeFillColor(l.hl));
-        g.ring(x + 6, y + 7, 6, 1.2f, nodeRingColor(l.hl));
-        g.text(l.text, x + 16, y - 1, 12, th.textDim);
-        x += 26 + g.textWidth(l.text, 12);
+        g.fillCircle(x + r, y + 10, r, nodeFillColor(l.hl));
+        g.ring(x + r, y + 10, r, 1.6f, nodeRingColor(l.hl));
+        g.text(l.text, x + 2 * r + 8, y, size, th.text);
+        x += 2 * r + 8 + g.textWidth(l.text, size) + 22;
     }
     legendWidth_ = x - canvas_.x;
 }
