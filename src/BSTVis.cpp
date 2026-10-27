@@ -10,13 +10,14 @@
 #include <functional>
 #include "Scene.h"
 
-BSTVis::BSTVis() : BinaryVisBase("Binary Search Tree", "left < node < right  -  insert, delete, search") {}
+BSTVis::BSTVis() : BinaryVisBase("Binary Search Tree", "left < node < right  -  insert, delete, search, traversals") {}
 
 void BSTVis::setup() {
     allowNumberLists();
     addButton(ActInsert, "Insert", "Insert the typed number (Enter)", true);
     addButton(ActDelete, "Delete", "Delete the typed number (Delete key)");
     addButton(ActSearch, "Search", "Search for the typed number");
+    addTraversalButtons();
     addButton(ActClear, "Clear");
     setPlaceholder("Number, e.g. 42");
 
@@ -32,6 +33,7 @@ void BSTVis::buildScene(Frame& f) {
 }
 
 void BSTVis::onAction(int id, const std::string& input) {
+    if (handleTraversal(id)) return;
     int v = 0;
     switch (id) {
     case ActInsert:

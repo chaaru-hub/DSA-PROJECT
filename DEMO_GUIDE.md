@@ -36,7 +36,12 @@ Start from the sample tree the program opens with (50 30 70 20 40 60 80 35 65 85
   3. delete the old 60 node, which has at most a right child (65 moves up).
 * **Say:** the successor is the smallest key larger than the deleted one, so the BST order is kept.
 
-### 5. The worst case (1 min)
+### 5. Traversals (1.5 min)
+* **Inorder:** the output at the top is **sorted**. *"This is why inorder of a BST = sorted order."*
+* **Preorder** (root first, used to copy/save a tree), **Postorder** (children first, used to
+  delete a tree).
+
+### 6. The worst case (1 min)
 * **Clear**, then type `10 20 30 40 50` and press Enter. Every node goes right, and the tree becomes
   a **linked list** of height n − 1.
 * **Say:** search is O(log n) on average but **O(n) in the worst case**. Self-balancing trees

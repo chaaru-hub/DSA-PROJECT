@@ -17,6 +17,7 @@ in plain English ("35 > 30, go right").
 | **Insert** (one number or a list like `50 30 70 20`) | comparison at each node ("17 < 50, go left"), the new node growing into the empty spot |
 | **Delete** | the search path, then the case: **leaf** (just removed), **one child** (child moves up), **two children** (find the inorder successor, copy it, delete the successor) |
 | **Search** | the path of comparisons; found (blue) or "not in the tree" |
+| **Inorder / Preorder / Postorder** | each node lights up in visiting order; the output builds up at the top |
 | **Clear** | removes every node so you can start again |
 
 ---
@@ -102,7 +103,7 @@ To rebuild the web files after changing the C++ code: `make web` (needs the Emsc
 | Type a number (or a list `50 30 70`) | the input box focuses by itself as you type |
 | **Enter** | insert the typed value(s); each insert animates in turn |
 | **Delete** key | delete the typed value(s) |
-| Buttons in the bottom bar | Insert, Delete, Search, Clear |
+| Buttons in the bottom bar | Insert, Delete, Search, Inorder, Preorder, Postorder, Clear |
 | (after any operation) | the button you used last stays highlighted in yellow until you use another one |
 | **Space** | pause / resume the animation |
 | **Right arrow** | next step (pauses automatically, then steps one at a time) |
@@ -126,8 +127,8 @@ teal = new node / copied key · red = node being deleted.
 include/                         src/
   App.h            window, renderer, 60 FPS main loop
   TreeVisualizer.h BASE CLASS: layout, buttons, input box, keys
-  BinaryVisBase.h  binary-tree helpers (count nodes, free memory)
-  BSTVis.h         THE BINARY SEARCH TREE: insert, delete, search
+  BinaryVisBase.h  binary-tree helpers + the three traversal animations
+  BSTVis.h         THE BINARY SEARCH TREE: insert, delete, search, traversals
   Anim.h           Frame (snapshot) + AnimPlayer (queue of steps) + easing
   Scene.h          draws and blends two frames, in-order layout, camera fit
   Gfx.h            anti-aliased shapes and text through SDL_RenderGeometry
