@@ -12,7 +12,7 @@ The banner at the bottom of the canvas always says what the algorithm is doing; 
 ---
 
 ### 1. What a BST is (1 min)
-* The screen opens with a sample tree. Read the **Definition** from the side panel.
+* The screen opens with a sample tree. Explain the rule: left < node < right.
 * Point at any node: *"everything on its left is smaller, everything on its right is larger."*
 
 ### 2. Build a tree from the class's numbers (2 min)
@@ -21,14 +21,13 @@ The banner at the bottom of the canvas always says what the algorithm is doing; 
 * Each insert animates in turn: *"30 < 50, go left … the left child is empty, insert here."*
 * **Say:** insertion always adds a new **leaf**; the cost is the height of the tree.
 
-### 3. Search, Min, Max (1.5 min)
+### 3. Search (1.5 min)
 * Type `40` → **Search**: *"40 < 50 go left, 40 > 30 go right, found."* Half the tree is discarded
   at every comparison, which is binary search.
 * Type `45` → **Search**: the path ends at an empty child, so it is not in the tree.
-* **Min** walks left until there is no left child; **Max** walks right.
 
 ### 4. Delete – the three cases (2.5 min)
-Use **Load sample** first (50 30 70 20 40 60 80 35 65 85).
+Start from the sample tree the program opens with (50 30 70 20 40 60 80 35 65 85).
 * **Leaf:** delete `20`. It is simply removed.
 * **One child:** delete `40` (its only child is 35). The child moves up into its place.
 * **Two children:** delete `50` (the root). Step through it:
@@ -37,17 +36,11 @@ Use **Load sample** first (50 30 70 20 40 60 80 35 65 85).
   3. delete the old 60 node, which has at most a right child (65 moves up).
 * **Say:** the successor is the smallest key larger than the deleted one, so the BST order is kept.
 
-### 5. Traversals (1.5 min)
-* **Inorder:** the output at the top is **sorted**. *"This is why inorder of a BST = sorted order."*
-* **Preorder** (root first, used to copy/save a tree), **Postorder** (children first, used to
-  delete a tree).
-
-### 6. The worst case (1 min)
+### 5. The worst case (1 min)
 * **Clear**, then type `10 20 30 40 50` and press Enter. Every node goes right, and the tree becomes
   a **linked list** of height n − 1.
 * **Say:** search is O(log n) on average but **O(n) in the worst case**. Self-balancing trees
   (AVL, Red-Black) fix this by rotating.
-* Point at the **Time complexity** table in the side panel.
 
 ### Closing (20 s)
 * *"The algorithm records each step as a snapshot; an animation player plays those snapshots
@@ -59,6 +52,5 @@ Use **Load sample** first (50 30 70 20 40 60 80 35 65 85).
 
 ## If something goes wrong during the demo
 * Animation too slow → **Up arrow** a few times, or **End** to jump to the result.
-* Tree looks cluttered → **Clear**, then **Load sample**.
-* Want more room → **F1** hides the side panel.
+* Tree looks cluttered → **Clear**, then type a few numbers again.
 * Typed something wrong → **Backspace**, or **Tab** to leave the input box.

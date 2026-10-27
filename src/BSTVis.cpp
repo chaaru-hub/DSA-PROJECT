@@ -10,56 +10,18 @@
 #include <functional>
 #include "Scene.h"
 
-BSTVis::BSTVis() : BinaryVisBase("Binary Search Tree", "left < node < right  -  insert, delete, search, min / max") {}
+BSTVis::BSTVis() : BinaryVisBase("Binary Search Tree", "left < node < right  -  insert, delete, search") {}
 
 void BSTVis::setup() {
     allowNumberLists();
     addButton(ActInsert, "Insert", "Insert the typed number (Enter)", true);
     addButton(ActDelete, "Delete", "Delete the typed number (Delete key)");
     addButton(ActSearch, "Search", "Search for the typed number");
-    addButton(ActMin, "Min", "Walk left to the smallest key");
-    addButton(ActMax, "Max", "Walk right to the largest key");
-    addTraversalButtons();
-    addButton(ActRandom, "Insert random");
     addButton(ActClear, "Clear");
-    addButton(ActSample, "Load sample");
     setPlaceholder("Number, e.g. 42");
 
-    info_.definition =
-        "A Binary Search Tree (BST) is a binary tree in which every node's key is greater than all "
-        "keys in its left subtree and smaller than all keys in its right subtree. Each comparison "
-        "lets us throw away one whole subtree, just like binary search on a sorted array.";
-    info_.properties = {
-        "Each node has at most two children: left and right.",
-        "Left subtree < node < right subtree (duplicates are rejected here).",
-        "An inorder traversal visits the keys in sorted order.",
-        "The minimum is the leftmost node, the maximum the rightmost node.",
-        "The shape depends on insertion order: inserting sorted data gives a 'linked list' of "
-        "height n, which is why balanced trees (AVL, Red-Black) exist.",
-        "Delete has 3 cases: leaf (just remove), one child (bypass the node), two children "
-        "(copy the inorder successor, then delete the successor)."};
-    info_.complexity = {{"Search", "O(1)", "O(log n)", "O(n)"},
-                        {"Insert", "O(1)", "O(log n)", "O(n)"},
-                        {"Delete", "O(1)", "O(log n)", "O(n)"},
-                        {"Min / Max", "O(1)", "O(log n)", "O(n)"},
-                        {"Traversal", "O(n)", "O(n)", "O(n)"}};
-    info_.space = "O(n) nodes, O(h) recursion stack";
-    info_.uses = {"Ordered dictionaries / symbol tables in compilers.",
-                  "Range queries: list all keys between a and b in sorted order.",
-                  "Foundation of balanced trees used by std::map, Java TreeMap, Linux kernel.",
-                  "Sorting by inserting then doing an inorder traversal (tree sort)."};
-    info_.tips = {"Type a number and press Enter to insert it.",
-                  "Delete: type the number, press the Delete key or button.",
-                  "Try inserting 10, 20, 30, 40, 50 to show the degenerate (skewed) case.",
-                  "Delete the root of the sample to see the two-children case."};
     loadSample();
     showNow();
-}
-
-bool BSTVis::contains(int key) const {
-    for (BSTNode* n = root_; n; n = key < n->key ? n->left : n->right)
-        if (n->key == key) return true;
-    return false;
 }
 
 void BSTVis::buildScene(Frame& f) {
@@ -70,7 +32,6 @@ void BSTVis::buildScene(Frame& f) {
 }
 
 void BSTVis::onAction(int id, const std::string& input) {
-    if (handleTraversal(id)) return;
     int v = 0;
     switch (id) {
     case ActInsert:
@@ -81,24 +42,11 @@ void BSTVis::onAction(int id, const std::string& input) {
         else if (id == ActDelete) remove(v);
         else search(v);
         break;
-    case ActMin: findExtreme(true); break;
-    case ActMax: findExtreme(false); break;
-    case ActRandom: {
-        int tries = 0;
-        do { v = randInt(1, 99); } while (contains(v) && ++tries < 100);
-        insert(v);
-        break;
-    }
     case ActClear:
         beginOp("CLEAR");
         destroy(root_);
         root_ = nullptr;
         done("All nodes removed.");
-        break;
-    case ActSample:
-        beginOp("LOAD SAMPLE");
-        loadSample();
-        done("Sample tree loaded: 50 30 70 20 40 60 80 35 65 85");
         break;
     }
 }
@@ -177,27 +125,6 @@ void BSTVis::search(int key) {
         ++depth;
     }
     done(k + " is not in the tree (we reached an empty child).");
-}
-
-// ---------------------------------------------------------------------------
-// MIN / MAX: keep going left (or right) until there is no child.
-// ---------------------------------------------------------------------------
-void BSTVis::findExtreme(bool findMin) {
-    beginOp(findMin ? "FIND MINIMUM" : "FIND MAXIMUM");
-    if (!root_) { done("The tree is empty."); return; }
-    BSTNode* cur = root_;
-    while (true) {
-        BSTNode* next = findMin ? cur->left : cur->right;
-        if (!next) break;
-        setHl(cur->id, Hl::Current);
-        step(std::to_string(cur->key) + " has a " + (findMin ? "left" : "right") + " child, keep going " +
-             (findMin ? "left" : "right"));
-        setHl(cur->id, Hl::Visited);
-        cur = next;
-    }
-    setHl(cur->id, Hl::Found);
-    done(std::string(findMin ? "Minimum" : "Maximum") + " = " + std::to_string(cur->key) +
-         " (no " + (findMin ? "left" : "right") + " child)");
 }
 
 // ---------------------------------------------------------------------------

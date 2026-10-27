@@ -250,13 +250,6 @@ void TreeVisualizer::handleEvent(const SDL_Event& e) {
             if (b.hit(x, y)) { triggerAction(b.id); break; }
         break;
     }
-    case SDL_MOUSEWHEEL: {
-        if (pointIn(infoRect_, mouseX_, mouseY_))
-            infoScroll_ = std::clamp(infoScroll_ - e.wheel.y * 40.0f, 0.0f, infoMaxScroll_);
-        else if (pointIn(logRect_, mouseX_, mouseY_))
-            logScroll_ = std::max(0, logScroll_ + e.wheel.y * 2);
-        break;
-    }
     case SDL_TEXTINPUT: {
         // Typing anything (except a lone space) starts editing the input box,
         // so "type 17, press Enter" works without clicking first.
@@ -288,8 +281,6 @@ void TreeVisualizer::handleEvent(const SDL_Event& e) {
             if (hasButton(ActDelete) && !input_.text.empty()) triggerAction(ActDelete);
         } else if (k == SDLK_TAB) {
             input_.focused = !input_.focused;
-        } else if (k == SDLK_F1) {
-            showPanel_ = !showPanel_;
         }
         break;
     }
@@ -304,13 +295,8 @@ void TreeVisualizer::handleEvent(const SDL_Event& e) {
 void TreeVisualizer::layout(Gfx& g, int w, int h) {
     winW_ = w;
     winH_ = h;
-    float panelW = showPanel_ ? std::clamp(w * 0.28f, 300.0f, 440.0f) : 0.0f;
-    float leftW = w - panelW;
+    float leftW = (float)w;             // the tree canvas uses the full width
     topBar_ = SDL_FRect{0, 0, (float)w, kTopBarH};
-    panel_ = SDL_FRect{leftW, kTopBarH, panelW, h - kTopBarH};
-    float logH = std::max(220.0f, panel_.h * 0.38f);
-    infoRect_ = SDL_FRect{panel_.x + 16, panel_.y + 40, panel_.w - 30, panel_.h - logH - 64};
-    logRect_ = SDL_FRect{panel_.x + 16, panel_.y + panel_.h - logH + 10, panel_.w - 30, logH - 22};
 
     // top bar buttons (right aligned playback cluster)
     float x = w - 14 - 150 - 56;         // slider + value label (right edge of the window)
@@ -425,7 +411,6 @@ void TreeVisualizer::draw(Gfx& g, int winW, int winH) {
 
     drawControls(g);
     drawTopBar(g);
-    if (showPanel_) drawSidePanel(g);
 
     // ---- tooltip for hovered button ----
     for (const Button& b : buttons_)
@@ -477,119 +462,3 @@ void TreeVisualizer::drawControls(Gfx& g) {
     for (const Button& b : buttons_) b.draw(g);
 }
 
-void TreeVisualizer::drawSidePanel(Gfx& g) {
-    const Theme& th = theme();
-    g.fillRect(panel_.x, panel_.y, panel_.w, panel_.h, th.panel);
-    g.fillRect(panel_.x, panel_.y, 1, panel_.h, th.border);
-    g.text("ABOUT THIS TREE", panel_.x + 16, panel_.y + 14, 13, th.accent, Align::Left, true);
-    const char* hint = "F1 hide  F2 theme  F3 FPS";
-    if (g.textWidth("ABOUT THIS TREE", 13, true) + g.textWidth(hint, 12) + 48 < panel_.w)
-        g.text(hint, panel_.x + panel_.w - 16, panel_.y + 14, 12, th.textDim, Align::Right);
-    drawInfo(g, infoRect_);
-    float ly = logRect_.y - 30;
-    g.fillRect(panel_.x, ly - 8, panel_.w, 1, th.border);
-    g.text("STEP LOG", panel_.x + 16, ly, 13, th.accent, Align::Left, true);
-    g.text("wheel to scroll", panel_.x + panel_.w - 16, ly, 12, th.textDim, Align::Right);
-    drawLog(g, logRect_);
-}
-
-void TreeVisualizer::drawInfo(Gfx& g, const SDL_FRect& r) {
-    const Theme& th = theme();
-    g.pushClip(r.x - 4, r.y - 4, r.w + 8, r.h + 4);
-    float y = r.y - infoScroll_;
-    const float body = 14, lh = 19;
-    auto heading = [&](const std::string& s) {
-        y += 6;
-        g.text(s, r.x, y, 15, th.text, Align::Left, true);
-        y += 22;
-    };
-    auto para = [&](const std::string& s, float indent) {
-        for (auto& l : g.wrap(s, body, r.w - indent)) {
-            g.text(l, r.x + indent, y, body, th.textDim);
-            y += lh;
-        }
-    };
-    auto bullets = [&](const std::vector<std::string>& v) {
-        for (auto& s : v) {
-            g.fillCircle(r.x + 5, y + 9, 2.6f, th.accent);
-            para(s, 16);
-            y += 3;
-        }
-    };
-    heading("Definition");
-    para(info_.definition, 0);
-    if (!info_.properties.empty()) { heading("Key properties"); bullets(info_.properties); }
-    if (!info_.complexity.empty()) {
-        heading("Time complexity");
-        float c0 = r.w * 0.34f, cw = (r.w - c0) / 3;
-        auto row = [&](const ComplexityRow& c, bool head, int i) {
-            if (!head && i % 2 == 0) g.fillRect(r.x, y - 2, r.w, 22, th.panelAlt);
-            Color col = head ? th.text : th.textDim;
-            g.text(c.op, r.x + 6, y, 13, th.text, Align::Left, head);
-            g.text(c.best, r.x + c0 + cw * 0.5f, y, 13, col, Align::Center, head);
-            g.text(c.avg, r.x + c0 + cw * 1.5f, y, 13, col, Align::Center, head);
-            g.text(c.worst, r.x + c0 + cw * 2.5f, y, 13, col, Align::Center, head);
-            y += 22;
-        };
-        row({"Operation", "Best", "Average", "Worst"}, true, 0);
-        g.fillRect(r.x, y - 3, r.w, 1, th.border);
-        int i = 0;
-        for (auto& c : info_.complexity) row(c, false, i++);
-        if (!info_.space.empty()) { y += 4; para("Space: " + info_.space, 0); }
-    }
-    if (!info_.uses.empty()) { heading("Real-world uses"); bullets(info_.uses); }
-    if (!info_.tips.empty()) { heading("Using this screen"); bullets(info_.tips); }
-    float total = y + infoScroll_ - r.y;
-    infoMaxScroll_ = std::max(0.0f, total - r.h + 10);
-    infoScroll_ = std::min(infoScroll_, infoMaxScroll_);
-    g.popClip();
-    if (infoMaxScroll_ > 0) {
-        // scroll bar
-        float frac = r.h / total;
-        float bh = std::max(30.0f, r.h * frac);
-        float by = r.y + (r.h - bh) * (infoScroll_ / infoMaxScroll_);
-        g.fillRoundRect(r.x + r.w + 6, by, 4, bh, 2, th.border);
-    }
-}
-
-void TreeVisualizer::drawLog(Gfx& g, const SDL_FRect& r) {
-    const Theme& th = theme();
-    struct Line { std::string text; int kind; bool current; };
-    std::vector<Line> lines;
-    const auto& frames = player_.frames();
-    int cur = player_.current();
-    int start = std::max(0, cur - 250);
-    int lastWithText = -1;
-    for (int i = cur; i >= 0; --i)
-        if (!frames[i].log.empty() || !frames[i].header.empty()) { lastWithText = i; break; }
-    for (int i = start; i <= cur; ++i) {
-        const Frame& f = frames[i];
-        bool isCur = (i == lastWithText);
-        if (!f.header.empty())
-            for (auto& l : g.wrap(f.header, 13, r.w - 12, true)) lines.push_back({l, LogHeader, false});
-        if (!f.log.empty()) {
-            for (auto& l : g.wrap(f.log, 13, r.w - 22, f.logKind == LogResult))
-                lines.push_back({l, f.logKind, isCur});
-        }
-    }
-    const float lh = 18;
-    int visible = (int)(r.h / lh);
-    int maxScroll = std::max(0, (int)lines.size() - visible);
-    logScroll_ = std::min(logScroll_, maxScroll);
-    int end = (int)lines.size() - logScroll_;
-    int begin = std::max(0, end - visible);
-    g.pushClip(r.x - 4, r.y, r.w + 8, r.h);
-    float y = r.y;
-    for (int i = begin; i < end; ++i) {
-        const Line& L = lines[i];
-        if (L.current) g.fillRect(r.x - 4, y - 1, r.w + 8, lh, withAlpha(th.current, 0.18f));
-        if (L.kind == LogHeader) {
-            g.text(L.text, r.x, y, 13, th.accent, Align::Left, true);
-        } else {
-            Color c = L.kind == LogResult ? th.visited : (L.current ? th.text : th.textDim);
-            g.text(L.text, r.x + 10, y, 13, c, Align::Left, L.kind == LogResult);
-        }
-        y += lh;
-    }
-    g.popClip();
-}

@@ -1,9 +1,8 @@
 # Binary Search Tree Visualizer (C++17 + SDL2)
 
 An interactive, animated visualizer for the **Binary Search Tree (BST)**, built for a DSA class
-demo. Every operation is animated step by step. A plain-English log explains each step
-("35 > 30, go right"), and a side panel shows the definition, properties, complexity table and
-real-world uses, so you can read from it while presenting.
+demo. Every operation is animated step by step, and the bar under the tree explains each step
+in plain English ("35 > 30, go right").
 
 ![screenshots](screenshots.png)
 
@@ -18,9 +17,7 @@ real-world uses, so you can read from it while presenting.
 | **Insert** (one number or a list like `50 30 70 20`) | comparison at each node ("17 < 50, go left"), the new node growing into the empty spot |
 | **Delete** | the search path, then the case: **leaf** (just removed), **one child** (child moves up), **two children** (find the inorder successor, copy it, delete the successor) |
 | **Search** | the path of comparisons; found (blue) or "not in the tree" |
-| **Min / Max** | walking left (or right) until there is no child |
-| **Inorder / Preorder / Postorder** | each node lights up in visiting order; the output builds up at the top |
-| **Insert random / Clear / Load sample** | quick setup during the demo |
+| **Clear** | removes every node so you can start again |
 
 ---
 
@@ -105,7 +102,7 @@ To rebuild the web files after changing the C++ code: `make web` (needs the Emsc
 | Type a number (or a list `50 30 70`) | the input box focuses by itself as you type |
 | **Enter** | insert the typed value(s); each insert animates in turn |
 | **Delete** key | delete the typed value(s) |
-| Buttons in the bottom bar | Insert, Delete, Search, Min, Max, Inorder, Preorder, Postorder, Insert random, Clear, Load sample |
+| Buttons in the bottom bar | Insert, Delete, Search, Clear |
 | (after any operation) | the button you used last stays highlighted in yellow until you use another one |
 | **Space** | pause / resume the animation |
 | **Right arrow** | next step (pauses automatically, then steps one at a time) |
@@ -113,8 +110,6 @@ To rebuild the web files after changing the C++ code: `make web` (needs the Emsc
 | **Up / Down arrows** | faster / slower (0.25x – 4x); there is also a speed slider in the top bar |
 | **End** | skip to the end of the queued animation |
 | **Tab** | focus / unfocus the input box |
-| **Mouse wheel** | scroll the info panel or the step log |
-| **F1** | hide / show the side panel |
 | **F2** | light / dark theme |
 | **F3** | FPS counter |
 | **F11** | fullscreen |
@@ -130,9 +125,9 @@ teal = new node / copied key · red = node being deleted.
 ```
 include/                         src/
   App.h            window, renderer, 60 FPS main loop
-  TreeVisualizer.h BASE CLASS: layout, buttons, input box, step log, info panel, keys
-  BinaryVisBase.h  binary-tree helpers + the three traversal animations
-  BSTVis.h         THE BINARY SEARCH TREE: insert, delete, search, min, max
+  TreeVisualizer.h BASE CLASS: layout, buttons, input box, keys
+  BinaryVisBase.h  binary-tree helpers (count nodes, free memory)
+  BSTVis.h         THE BINARY SEARCH TREE: insert, delete, search
   Anim.h           Frame (snapshot) + AnimPlayer (queue of steps) + easing
   Scene.h          draws and blends two frames, in-order layout, camera fit
   Gfx.h            anti-aliased shapes and text through SDL_RenderGeometry

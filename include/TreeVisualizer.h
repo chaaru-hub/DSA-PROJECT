@@ -2,10 +2,9 @@
 // TreeVisualizer.h - shared base class for every tree screen.
 //
 // The base class owns everything that is the SAME for all trees:
-//   * window layout (top bar, canvas, control bar, side panel)
+//   * window layout (top bar, canvas, control bar)
 //   * the input box, buttons, speed slider and keyboard shortcuts
-//   * the AnimPlayer (queue of animation steps) and the step log
-//   * the information panel (definition, properties, complexity, uses)
+//   * the AnimPlayer (queue of animation steps)
 //
 // A concrete tree (BSTVis, AVLVis, ...) only has to:
 //   1. implement its data structure,
@@ -21,20 +20,6 @@
 #include "Gfx.h"
 #include "UI.h"
 
-struct ComplexityRow {
-    std::string op, best, avg, worst;
-};
-
-// Text for the side panel - read it out while presenting.
-struct InfoText {
-    std::string definition;
-    std::vector<std::string> properties;
-    std::vector<ComplexityRow> complexity;
-    std::string space;
-    std::vector<std::string> uses;
-    std::vector<std::string> tips;     // "how to use this screen"
-};
-
 // One entry of the colour key drawn in the canvas corner.
 struct LegendItem {
     Hl hl;
@@ -43,8 +28,7 @@ struct LegendItem {
 
 // Action ids shared by all visualizers; trees add their own from ActCustom.
 enum CommonAction {
-    ActInsert = 1, ActDelete, ActSearch, ActRandom, ActClear, ActSample,
-    ActInorder, ActPreorder, ActPostorder,
+    ActInsert = 1, ActDelete, ActSearch, ActClear,
     ActCustom = 100
 };
 
@@ -73,7 +57,7 @@ public:
 
 protected:
     // ---- implemented by each tree ----
-    virtual void setup() = 0;                                     // buttons, info text, sample
+    virtual void setup() = 0;                                     // buttons and the starting tree
     virtual void onAction(int id, const std::string& input) = 0;  // run an operation
     virtual void buildScene(Frame& f) = 0;                        // describe current tree
 
@@ -104,7 +88,6 @@ protected:
 
     std::string caption_;                 // shown at the top of the canvas
     std::vector<LegendItem> legend_;
-    InfoText info_;
     std::mt19937 rng_{12345};
     AnimPlayer player_;
 
@@ -115,9 +98,6 @@ private:
     void runAction(int id, const std::string& text);
     void drawTopBar(Gfx& g);
     void drawControls(Gfx& g);
-    void drawSidePanel(Gfx& g);
-    void drawInfo(Gfx& g, const SDL_FRect& r);
-    void drawLog(Gfx& g, const SDL_FRect& r);
     void drawLegend(Gfx& g);
     void setSpeed(float s);
 
@@ -132,14 +112,11 @@ private:
     std::vector<Hl> hls_;
     int nextId_ = 1;
     bool recording_ = true;
-    bool showPanel_ = true;
     float time_ = 0, mouseX_ = 0, mouseY_ = 0;
-    float infoScroll_ = 0, infoMaxScroll_ = 0;
     float legendWidth_ = 0;
-    int logScroll_ = 0;
     std::string toast_;
     float toastTime_ = 0;
     // layout rectangles (recomputed every frame)
     int winW_ = 1280, winH_ = 800;
-    SDL_FRect topBar_{}, canvas_{}, controls_{}, panel_{}, infoRect_{}, logRect_{};
+    SDL_FRect topBar_{}, canvas_{}, controls_{};
 };

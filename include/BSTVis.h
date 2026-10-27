@@ -1,5 +1,5 @@
 // ============================================================================
-// BSTVis.h - Binary Search Tree: insert, delete (3 cases), search, min, max
+// BSTVis.h - Binary Search Tree: insert, delete (3 cases), search
 // ============================================================================
 #pragma once
 #include "BinaryVisBase.h"
@@ -23,11 +23,8 @@ protected:
     void buildScene(Frame& f) override;
 
 private:
-    enum { ActMin = ActCustom, ActMax };
     void insert(int key);
     void remove(int key);
     void search(int key);
-    void findExtreme(bool findMin);
     void loadSample();
-    bool contains(int key) const;
 };
